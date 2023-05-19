@@ -10,7 +10,35 @@ class Program
     {
         //Console.WriteLine("Hello, World!");
         //TestDrawLine();
-        DrawModel();
+        //DrawModel();
+        DrawCircle();
+    }
+    static void DrawCircle()
+    {
+        //(x-a)^2+(y-b)^2=z^2
+
+        //(y-b)^2 = z^2-(x-a)^2
+
+        //(y-b) = 
+        int width = 800;
+        int height = 800;
+        int a = width/2;
+        int b = height/2;
+        int r = 400;
+        Image<Rgba32> image = new Image<Rgba32>(width, height, Color.Black);
+        for (int i = a-r; i < a+r; i+=10)
+        {
+            int x = i;
+            double dy = Math.Cbrt(Math.Pow(r, 2) - Math.Pow((x - a), 2));
+            int uy =(int)Math.Ceiling( b+dy);
+            int by = (int)Math.Ceiling(b - dy);
+
+            //int y =(int)Math.Ceiling((Math.Cbrt( Math.Pow(r,2)-Math.Pow((x-a),2))+b));
+            DrawLine(image,x, uy, a,b,Color.White);
+            DrawLine(image,x,by, a,b,Color.White);
+        }
+        string path = Environment.CurrentDirectory + "/framgent.png";
+        image.SaveAsPng(path);
     }
     static void DrawModel()
     {
@@ -79,10 +107,6 @@ UngroupedFaces all faces not grouped into objects.
     }
     static void DrawLine(Image<Rgba32> image, int x0, int y0, int x1, int y1, Color color)
     {
-        x0 = Math.Clamp(x0,0,799);
-        x1 = Math.Clamp(x1, 0,799);
-        y0 = Math.Clamp(y0, 0,799);
-        y1 = Math.Clamp(y1, 0,799);
         int offsetX = Math.Abs(x1 - x0);
         int offsetY = Math.Abs(y1 - y0);
         bool steep = false;
