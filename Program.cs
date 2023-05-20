@@ -10,8 +10,8 @@ class Program
     {
         //Console.WriteLine("Hello, World!");
         //TestDrawLine();
-        //DrawModel();
-        DrawCircle();
+        DrawModel();
+        //DrawCircle();
     }
     static void DrawCircle()
     {
@@ -26,22 +26,22 @@ class Program
         int b = height/2;
         int r = 400;
         Image<Rgba32> image = new Image<Rgba32>(width, height, Color.Black);
-        //DrawLine2(image, a-r,b, a, b, Color.White);
-        //DrawLine2(image, a-283,b-283, a, b, Color.White);
-        //DrawLine2(image, a,b-r, a, b, Color.White);
-        //DrawLine2(image, a+283,b-283, a, b, Color.White);
-        //DrawLine2(image, a+r,b, a, b, Color.White);
-        //DrawLine2(image, a+283,b+283, a, b, Color.White);
-        //DrawLine2(image, a,b+r, a, b, Color.White);
-        //DrawLine2(image, a-283,b+283, a, b, Color.White);
-        for (int i = 0; i < r; i += 10)
+        //DrawLine(image, a - r, b, a, b, Color.White);
+        //DrawLine(image, a - 283, b - 283, a, b, Color.White);
+        //DrawLine(image, a, b - r, a, b, Color.White);
+        //DrawLine(image, a + 283, b - 283, a, b, Color.White);
+        //DrawLine(image, a + r, b, a, b, Color.White);
+        //DrawLine(image, a + 283, b + 283, a, b, Color.White);
+        //DrawLine(image, a, b + r, a, b, Color.White);
+        //DrawLine(image, a - 283, b + 283, a, b, Color.White);
+        for (int i = 0; i <= r; i += 10)
         {
             int x = i;
-            int dy = (int)Math.Ceiling(Math.Cbrt(Math.Pow(r, 2) - Math.Pow(x, 2)));
-            DrawLine2(image, a + x, b + dy, a, b, Color.White);
-            DrawLine2(image, a + x, b - dy, a, b, Color.White);
-            DrawLine2(image, a - x, b + dy, a, b, Color.White);
-            DrawLine2(image, a - x, b - dy, a, b, Color.White);
+            int dy = (int)Math.Ceiling(Math.Sqrt(Math.Pow(r, 2) - Math.Pow(x, 2)));
+            DrawLine(image, a + x, b + dy, a, b, Color.White);
+            DrawLine(image, a + x, b - dy, a, b, Color.White);
+            DrawLine(image, a - x, b + dy, a, b, Color.White);
+            DrawLine(image, a - x, b - dy, a, b, Color.White);
         }
         string path = Environment.CurrentDirectory + "/framgent.png";
         image.SaveAsPng(path);
@@ -78,7 +78,7 @@ UngroupedFaces all faces not grouped into objects.
                     int y0 = (int)Math.Ceiling((v0.y * height / 2)+height/2);
                     int x1 = (int)Math.Ceiling((v1.x * width / 2)+width / 2);
                     int y1 = (int)Math.Ceiling(((v1.y * height / 2))+height / 2);
-                    DrawLine2(image, x0, y0, x1, y1, color);
+                    DrawLine(image, x0, y0, x1, y1, color);
                 }
 
             }
@@ -196,6 +196,7 @@ UngroupedFaces all faces not grouped into objects.
             if (y1<y0)
             {
                 Swap(ref y1,ref y0);
+                Swap(ref x0,ref x1);
             }
             for (int deltaY = y0; deltaY < y1; deltaY++)
             {
@@ -210,6 +211,7 @@ UngroupedFaces all faces not grouped into objects.
             if (x0 > x1)
             {
                 Swap(ref x0, ref x1);
+                Swap(ref y0, ref y1);
             }
             for (int deltaX = x0; deltaX < x1; deltaX++)
             {
