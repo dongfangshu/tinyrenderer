@@ -1,6 +1,8 @@
 ﻿using FileFormatWavefront;
 using FileFormatWavefront.Model;
 using SixLabors.ImageSharp.ColorSpaces;
+using System.ComponentModel;
+using System.Numerics;
 using Index = FileFormatWavefront.Model.Index;
 
 namespace tiny_renderer;
@@ -10,8 +12,9 @@ class Program
     {
         //Console.WriteLine("Hello, World!");
         //TestDrawLine();
-        DrawModel();
+        //DrawModel();
         //DrawCircle();
+        Test1();
     }
     static void DrawCircle()
     {
@@ -38,10 +41,10 @@ class Program
         {
             int x = i;
             int dy = (int)Math.Ceiling(Math.Sqrt(Math.Pow(r, 2) - Math.Pow(x, 2)));
-            DrawLine(image, a + x, b + dy, a, b, Color.White);
-            DrawLine(image, a + x, b - dy, a, b, Color.White);
-            DrawLine(image, a - x, b + dy, a, b, Color.White);
-            DrawLine(image, a - x, b - dy, a, b, Color.White);
+            Graphics.DrawLine(image, a + x, b + dy, a, b, Color.White);
+            Graphics.DrawLine(image, a + x, b - dy, a, b, Color.White);
+            Graphics.DrawLine(image, a - x, b + dy, a, b, Color.White);
+            Graphics.DrawLine(image, a - x, b - dy, a, b, Color.White);
         }
         string path = Environment.CurrentDirectory + "/framgent.png";
         image.SaveAsPng(path);
@@ -78,7 +81,7 @@ UngroupedFaces all faces not grouped into objects.
                     int y0 = (int)Math.Ceiling((v0.y * height / 2)+height/2);
                     int x1 = (int)Math.Ceiling((v1.x * width / 2)+width / 2);
                     int y1 = (int)Math.Ceiling(((v1.y * height / 2))+height / 2);
-                    DrawLine(image, x0, y0, x1, y1, color);
+                    Graphics.DrawLine(image, x0, y0, x1, y1, color);
                 }
 
             }
@@ -100,8 +103,8 @@ UngroupedFaces all faces not grouped into objects.
         int centerX = width / 2;
         int centerY = height / 2;
         //左上角是原点
-        DrawLine2(image, centerX, centerY, centerX + 100, centerY - 100, Color.Red);//中心右上角45度
-        DrawLine2(image, centerX + 100, centerY, centerX + 100 + 100, centerY - 100, Color.Yellow);//中心右上角45度平行线
+        Graphics.DrawLine2(image, centerX, centerY, centerX + 100, centerY - 100, Color.Red);//中心右上角45度
+        Graphics.DrawLine2(image, centerX + 100, centerY, centerX + 100 + 100, centerY - 100, Color.Yellow);//中心右上角45度平行线
         //DrawLine(image, centerX, centerY, centerX + 100, centerY, Color.Green);//水平直线
         //DrawLine(image, centerX, centerY, centerX, centerY - 100, Color.Black);//垂直直线
 
@@ -111,122 +114,25 @@ UngroupedFaces all faces not grouped into objects.
         string path = Environment.CurrentDirectory + "/framgent.png";
         image.SaveAsPng(path);
     }
-    static void DrawLine2(Image<Rgba32> image, int x0, int y0, int x1, int y1, Color color)
+    static void Test1()
     {
-        int offsetX = Math.Abs(x1 - x0);
-        int offsetY = Math.Abs(y1 - y0);
-        bool steep = false;
-        if (offsetX < offsetY)
-        {
-            steep = true;
-        }
-
-        int a = y1 - y0;
-        int b = x0 - x1;
-        int c = x1 * y0 - x0 * y1;
-        if (steep)
-        {
-            if (y0 > y1)
-            {
-                Swap(ref y0, ref y1);
-            }
-            for (int y = y0; y < y1; y++)
-            {
-                int x = -(b * y + c) / a;
-                if (x > 799||x<0)
-                {
-                    Console.WriteLine("x:"+x);
-                    x = Math.Clamp(x,0,799);
-                }
-                if (y > 799 || y < 0)
-                {
-                    Console.WriteLine("y:"+y);
-                    y = Math.Clamp(y, 0, 799);
-                }
-                image[x, y] = color;
-            }
-        }
-        else
-        {
-            if (x0 > x1)
-            {
-                Swap(ref x0, ref x1);
-            }
-            for (int x = x0; x < x1; x++)
-            {
-                int y = -(a * x + c) / b;
-                if (x > 799 || x < 0)
-                {
-                    Console.WriteLine("x:" + x);
-                    x = Math.Clamp(x, 0, 799);
-                }
-                if (y > 799 || y < 0)
-                {
-                    Console.WriteLine("y:" + y);
-                    y = Math.Clamp(y, 0, 799);
-                }
-                image[x, y] = color;
-            }
-        }
-
+        int width = 800;
+        int height = 800;
+        Image<Rgba32> image = new Image<Rgba32>(width, height, Color.Black);
+        Vector2[] v1 = new Vector2[3]{new Vector2(10, 70), new Vector2(50, 160), new Vector2(70, 80) };
+        Vector2[] v2 = new Vector2[3] { new Vector2(180, 50), new Vector2(150, 1), new Vector2(70, 180) };
+        Vector2[] v3 = new Vector2[3] { new Vector2(180, 150), new Vector2(120, 160), new Vector2(130, 180) };
+        DrawTriangle(image,v1[0], v1[1], v1[2]);
+        DrawTriangle(image,v2[0], v2[1], v2[2]);
+        DrawTriangle(image,v3[0], v3[1], v3[2]);
+        string path = Environment.CurrentDirectory + "/framgent.png";
+        image.SaveAsPng(path);
     }
-    static void DrawLine(Image<Rgba32> image, int x0, int y0, int x1, int y1, Color color)
+    static void DrawTriangle(Image<Rgba32> image,Vector2 v1, Vector2 v2, Vector2 v3)
     {
-        if (x0 == x1 && y1 == y0)
-        {
-            //点
-            x0 = Math.Clamp(x0, 0, 799);
-            y0 = Math.Clamp(y0, 0, 799);
-            image[x0, y0] = color;
-            return;
-        }
-        //x0 = Math.Clamp(x0,0,799);
-        //y0 = Math.Clamp(y0, 0,799);
-        //x1 = Math.Clamp(x1, 0,799);
-        //y1 = Math.Clamp(y1,0,799);
-        int offsetX = Math.Abs(x1 - x0);
-        int offsetY = Math.Abs(y1 - y0);
-        bool steep = false;
-        if (offsetX < offsetY)
-        {
-            steep = true;
-        }
-        if (steep)
-        {
-            if (y1<y0)
-            {
-                Swap(ref y1,ref y0);
-                Swap(ref x0,ref x1);
-            }
-            for (int deltaY = y0; deltaY < y1; deltaY++)
-            {
-                float perY = (deltaY - y0) / (float)(y1 - y0);
-                int deltaX = (int)Math.Ceiling(((x1-x0) * perY) + x0);
-                deltaX = Math.Clamp(deltaX, 0, 799);
-                image[deltaX, deltaY] = color;
-            }
-        }
-        else
-        {
-            if (x0 > x1)
-            {
-                Swap(ref x0, ref x1);
-                Swap(ref y0, ref y1);
-            }
-            for (int deltaX = x0; deltaX < x1; deltaX++)
-            {
-                float perX = (deltaX - x0) / (float)(x1 - x0);
-                int deltaY = (int)Math.Ceiling(((y1-y0) * perX) + y0);
-                deltaY = Math.Clamp(deltaY, 0, 799);
-                image[deltaX, deltaY] = color;
-            }
-        }
-    }
-    static void Swap(ref int a, ref int b)
-    {
-        int tmp = a;
-        a = b;
-        b = tmp;
+        Graphics.DrawLine2(image,(int)v1.X, (int)v1.Y, (int)v2.X, (int)v2.Y,Color.Red);
+        Graphics.DrawLine2(image,(int)v1.X, (int)v1.Y, (int)v3.X, (int)v3.Y,Color.Green);
+        Graphics.DrawLine2(image,(int)v3.X, (int)v3.Y, (int)v2.X, (int)v2.Y,Color.Blue);
     }
 }
 
