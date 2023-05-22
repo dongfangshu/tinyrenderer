@@ -154,37 +154,62 @@ UngroupedFaces all faces not grouped into objects.
         //  这里到原点在左上角，和教程不一样。y越大越往下。所以这里是上半部分，教程是下半部分
         if (v1.Y>v2.Y)
         {
-            Swap(ref v1,ref v2);
+            MathHelper.Swap(ref v1,ref v2);
         }
         if (v1.Y>v3.Y)
         {
-            Swap(ref v1,ref v3);
+            MathHelper.Swap(ref v1,ref v3);
         }
         if (v2.Y>v3.Y)
         {
-            Swap(ref v2,ref v3);
+            MathHelper.Swap(ref v2,ref v3);
         }
-        //从上到下 v3 v2 v1
+        //从上到下 v1 v2 v3
+
+        //上半部分
         float totalHeight =v3.Y - v1.Y;
-        float segmentHeight = v2.Y - v1.Y;
+        float top_half_segmentHeight = v2.Y - v1.Y;
         for (float y = v1.Y; y < v2.Y; y++)
         {
             float a = (y - v1.Y) / totalHeight;
-            float b = (y - v1.Y) / segmentHeight;
+            float b = (y - v1.Y) / top_half_segmentHeight;
             Vector2 A = v1 + (v3 - v1) * a;
             Vector2 B = v1 + (v2 - v1) * b;
-            int left =(int)Math.Ceiling(A.X);
-            int right =(int)Math.Ceiling(B.X);
-            
+            int left = (int)Math.Ceiling(A.X);
+            int right = (int)Math.Ceiling(B.X);
             image[left, (int)y] = Color.Red;
-            image[right, (int)y] = Color.White;
+            image[right, (int)y] = Color.Green;
+            if (left > right)
+            {
+                MathHelper.Swap(ref left, ref right);
+            }
+            for (int x = left; x < right; x++)
+            {
+                image[x, (int)y] = Color.White;
+            }
+        }
+        //下半部分
+        float upper_half_segmentHeight = v3.Y - v2.Y;
+        for (float y = v2.Y; y < v3.Y; y++)
+        {
+            float a = (y - v1.Y) / totalHeight;
+            float b = (y - v2.Y) / upper_half_segmentHeight;
+            Vector2 A = v1 + (v3 - v1) * a;
+            Vector2 B = v2 + (v3 - v2) * b;
+            int left = (int)Math.Ceiling(A.X);
+            int right = (int)Math.Ceiling(B.X);
+            image[left, (int)y] = Color.Red;
+            image[right, (int)y] = Color.Green;
+            if (left > right)
+            {
+                MathHelper.Swap(ref left, ref right);
+            }
+            for (int x = left; x < right; x++)
+            {
+                image[x, (int)y] = Color.White;
+            }
         }
     }
-    static void Swap(ref Vector2 v1, ref Vector2 v2)
-    {
-        Vector2 tmp = v1;
-        v1 = v2;
-        v2 = tmp;
-    }
+
 }
 

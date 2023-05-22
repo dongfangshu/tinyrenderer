@@ -25,7 +25,7 @@ namespace tiny_renderer
             {
                 if (y0 > y1)
                 {
-                    Swap(ref y0, ref y1);
+                    MathHelper.Swap(ref y0, ref y1);
                 }
                 for (int y = y0; y < y1; y++)
                 {
@@ -47,7 +47,7 @@ namespace tiny_renderer
             {
                 if (x0 > x1)
                 {
-                    Swap(ref x0, ref x1);
+                    MathHelper.Swap(ref x0, ref x1);
                 }
                 for (int x = x0; x < x1; x++)
                 {
@@ -92,8 +92,8 @@ namespace tiny_renderer
             {
                 if (y1 < y0)
                 {
-                    Swap(ref y1, ref y0);
-                    Swap(ref x0, ref x1);
+                    MathHelper.Swap(ref y1, ref y0);
+                    MathHelper.Swap(ref x0, ref x1);
                 }
                 for (int deltaY = y0; deltaY < y1; deltaY++)
                 {
@@ -107,8 +107,8 @@ namespace tiny_renderer
             {
                 if (x0 > x1)
                 {
-                    Swap(ref x0, ref x1);
-                    Swap(ref y0, ref y1);
+                    MathHelper.Swap(ref x0, ref x1);
+                    MathHelper.Swap(ref y0, ref y1);
                 }
                 for (int deltaX = x0; deltaX < x1; deltaX++)
                 {
@@ -118,12 +118,6 @@ namespace tiny_renderer
                     image[deltaX, deltaY] = color;
                 }
             }
-        }
-        static void Swap(ref int a, ref int b)
-        {
-            int tmp = a;
-            a = b;
-            b = tmp;
         }
     }
 }
