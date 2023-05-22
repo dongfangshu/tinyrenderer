@@ -134,7 +134,6 @@ StyleCopReport.xml
 *_h.h
 *.ilk
 *.meta
-#*.obj
 *.iobj
 *.pch
 *.pdb
@@ -403,5 +402,3 @@ ASALocalRun/
 
 # Local History for Visual Studio
 .localhistory/
-
-!Assets
