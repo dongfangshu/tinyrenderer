@@ -17,7 +17,7 @@ namespace tiny_renderer
             //Test2();//三角面 扫线法
             //Test3();//三角面 叉乘
             DrawModelByLineSweeping();
-            DrawModelByCross();
+            //DrawModelByCross();
         }
         static void Test2()
         {
@@ -55,6 +55,7 @@ namespace tiny_renderer
             int width = 800;
             int height = 800;
             Image<Rgba32> image = new Image<Rgba32>(width, height, Color.Black);
+            Vector3 light_dir = new Vector3(0,0,-1);
             foreach (Group group in result.Model.Groups)
             {
 
@@ -62,6 +63,7 @@ namespace tiny_renderer
                 {
                     Color color = RandomColor();
                     Vector2[] points = new Vector2[3];
+                    Vector3[] world_points = new Vector3[3];
                     for (int i = 0; i < 3; i++)
                     {
                         int index = face.Indices[i].vertex;
@@ -69,8 +71,22 @@ namespace tiny_renderer
                         int x0 = (int)Math.Ceiling((v0.x * width / 2) + width / 2);
                         int y0 = (int)Math.Ceiling((v0.y * height / 2) + height / 2);
                         points[i] = new Vector2(x0, y0);
+                        world_points[i] = new Vector3(v0.x, v0.y, v0.z);
                     }
-                    Graphics.DrawTriangle(image, points[0], points[1], points[2],color);
+                    Vector3 n = Vector3.Cross(world_points[2]- world_points[0], world_points[1]- world_points[0]);
+                    Vector3 normalize = Vector3.Normalize(n);
+                    //光照负方向*法线方向*cosθ 来表示光照强度
+                    float intensity =Vector3.Dot(normalize, light_dir);
+                    if (intensity>0)
+                    {
+                        byte r =(byte)Math.Ceiling(intensity * 255);
+                        byte g =(byte)Math.Ceiling(intensity * 255);
+                        byte b =(byte)Math.Ceiling(intensity * 255);
+                        byte a = 255;
+                        Color intensityColor = Color.FromRgba(r,g,b,a);
+                        Graphics.DrawTriangle(image, points[0], points[1], points[2], intensityColor);
+                    }
+                    //Graphics.DrawTriangle(image, points[0], points[1], points[2],color);
                 }
             }
             string path = Environment.CurrentDirectory + "/Lesson2_model.png";
