@@ -252,9 +252,21 @@ namespace tiny_renderer
         public static bool InTriangle(Vector2 point, Vector2 a, Vector2 b, Vector2 c)
         {
             bool azugament = PointInLineZugammen(a,point,b,c);
+            if (!azugament)
+            {
+                return false;
+            }
             bool bzugament = PointInLineZugammen(b,point,a,c);
+            if (!bzugament)
+            {
+                return false;
+            }
             bool czugament = PointInLineZugammen(c,point,a,b);
-            return azugament && bzugament && czugament;
+            if (!czugament)
+            {
+                return false;
+            }
+            return true;
         }
         /// <summary>
         /// 判断两点是否在同侧
