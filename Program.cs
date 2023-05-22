@@ -14,7 +14,8 @@ class Program
         //TestDrawLine();
         //DrawModel();
         //DrawCircle();
-        Test1();
+        //Test1();
+        Test2();
     }
     static void DrawCircle()
     {
@@ -125,7 +126,21 @@ UngroupedFaces all faces not grouped into objects.
         DrawTriangle(image,v1[0], v1[1], v1[2]);
         DrawTriangle(image,v2[0], v2[1], v2[2]);
         DrawTriangle(image,v3[0], v3[1], v3[2]);
-        string path = Environment.CurrentDirectory + "/framgent.png";
+        string path = Environment.CurrentDirectory + "/framgent1.png";
+        image.SaveAsPng(path);
+    }
+    static void Test2()
+    {
+        int width = 800;
+        int height = 800;
+        Image<Rgba32> image = new Image<Rgba32>(width, height, Color.Black);
+        Vector2[] v1 = new Vector2[3] { new Vector2(10, 70), new Vector2(50, 160), new Vector2(70, 80) };
+        Vector2[] v2 = new Vector2[3] { new Vector2(180, 50), new Vector2(150, 1), new Vector2(70, 180) };
+        Vector2[] v3 = new Vector2[3] { new Vector2(180, 150), new Vector2(120, 160), new Vector2(130, 180) };
+        DrawTriangle2(image, v1[0], v1[1], v1[2]);
+        DrawTriangle2(image, v2[0], v2[1], v2[2]);
+        DrawTriangle2(image, v3[0], v3[1], v3[2]);
+        string path = Environment.CurrentDirectory + "/framgent2.png";
         image.SaveAsPng(path);
     }
     static void DrawTriangle(Image<Rgba32> image,Vector2 v1, Vector2 v2, Vector2 v3)
@@ -133,6 +148,43 @@ UngroupedFaces all faces not grouped into objects.
         Graphics.DrawLine2(image,(int)v1.X, (int)v1.Y, (int)v2.X, (int)v2.Y,Color.Red);
         Graphics.DrawLine2(image,(int)v1.X, (int)v1.Y, (int)v3.X, (int)v3.Y,Color.Green);
         Graphics.DrawLine2(image,(int)v3.X, (int)v3.Y, (int)v2.X, (int)v2.Y,Color.Blue);
+    }
+    static void DrawTriangle2(Image<Rgba32> image, Vector2 v1, Vector2 v2, Vector2 v3)
+    {
+        //  这里到原点在左上角，和教程不一样。y越大越往下。所以这里是上半部分，教程是下半部分
+        if (v1.Y>v2.Y)
+        {
+            Swap(ref v1,ref v2);
+        }
+        if (v1.Y>v3.Y)
+        {
+            Swap(ref v1,ref v3);
+        }
+        if (v2.Y>v3.Y)
+        {
+            Swap(ref v2,ref v3);
+        }
+        //从上到下 v3 v2 v1
+        float totalHeight =v3.Y - v1.Y;
+        float segmentHeight = v2.Y - v1.Y;
+        for (float y = v1.Y; y < v2.Y; y++)
+        {
+            float a = (y - v1.Y) / totalHeight;
+            float b = (y - v1.Y) / segmentHeight;
+            Vector2 A = v1 + (v3 - v1) * a;
+            Vector2 B = v1 + (v2 - v1) * b;
+            int left =(int)Math.Ceiling(A.X);
+            int right =(int)Math.Ceiling(B.X);
+            
+            image[left, (int)y] = Color.Red;
+            image[right, (int)y] = Color.White;
+        }
+    }
+    static void Swap(ref Vector2 v1, ref Vector2 v2)
+    {
+        Vector2 tmp = v1;
+        v1 = v2;
+        v2 = tmp;
     }
 }
 
