@@ -14,9 +14,16 @@
 
   <ItemGroup>
     <Folder Include="Assets\obj\" />
+    <Folder Include="Lesson\" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Lesson\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Assets\obj\african_head.obj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Assets\obj\african_head.obj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
