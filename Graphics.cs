@@ -256,7 +256,7 @@ namespace tiny_renderer
         /// <param name="v1"></param>
         /// <param name="v2"></param>
         /// <param name="v3"></param>
-        public static void DrawTriangle_Barycentric_Cross(Image<Rgba32> image, Vector2 v1, Vector2 v2, Vector2 v3, Color color)
+        public static void DrawTriangle_Barycentric_Cross(Image<Rgba32> image,Vector2 v1, Vector2 v2, Vector2 v3, Color color)
         {
             //box
             Box box = GetBox(new Vector2[3] { v1, v2, v3 });
@@ -276,16 +276,16 @@ namespace tiny_renderer
         }
         public static Box GetBox(Vector2[] points)
         {
-            float minX = 0;
-            float maxX = 0;
-            float minY = 0;
-            float maxY = 0;
+            int minX = 0;
+            int maxX = 0;
+            int minY = 0;
+            int maxY = 0;
             for (int i = 0; i < points.Length; i++)
             {
-                minX = Math.Min(minX, points[i].X);
-                maxX = Math.Max(maxX, points[i].X);
-                minY = Math.Min(minY, points[i].Y);
-                maxY = Math.Max(maxY, points[i].Y);
+                minX = Math.Min(minX, (int)points[i].X);
+                maxX = Math.Max(maxX, (int)points[i].X);
+                minY = Math.Min(minY, (int)points[i].Y);
+                maxY = Math.Max(maxY, (int)points[i].Y);
             }
             return new Box() { minX = minX, maxX = maxX, minY = minY, maxY = maxY };
         }
