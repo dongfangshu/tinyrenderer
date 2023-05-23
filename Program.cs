@@ -3,6 +3,7 @@ using FileFormatWavefront.Model;
 using SixLabors.ImageSharp.ColorSpaces;
 using System.ComponentModel;
 using System.Numerics;
+using tiny_renderer.Lesson;
 using Index = FileFormatWavefront.Model.Index;
 
 namespace tiny_renderer;
@@ -14,8 +15,11 @@ class Program
         //Lesson1 lesson1 = new Lesson1();
         //lesson1.Start();
 
-        Lesson2 lesson2 = new Lesson2();
-        lesson2.Start();
+        //Lesson2 lesson2 = new Lesson2();
+        //lesson2.Start();
+
+        Lesson3 lesson3 = new Lesson3();
+        lesson3.Start();
         //Test1();
         //Test2();
         //Test3();

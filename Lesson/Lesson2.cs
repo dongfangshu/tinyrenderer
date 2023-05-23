@@ -19,8 +19,11 @@ namespace tiny_renderer
             //DrawModelByLineSweeping();
             //DrawModelByCross();
             //DrawModelByBarycentric();
-            TestMath();
-            DrawModelByBarycentric_Cross();
+            //TestMath();
+            //DrawModelByLineSweeping();
+            DrawModelByZugammen();
+            //DrawModelByBarycentric();
+            //DrawModelByBarycentric_Cross();
         }
         static void TestMath()
         {
@@ -35,34 +38,34 @@ namespace tiny_renderer
             Console.WriteLine(x);
             Console.WriteLine(x1);
         }
-        static void Test2()
-        {
-            int width = 800;
-            int height = 800;
-            Image<Rgba32> image = new Image<Rgba32>(width, height, Color.Black);
-            Vector2[] v1 = new Vector2[3] { new Vector2(10, 70), new Vector2(50, 160), new Vector2(70, 80) };
-            Vector2[] v2 = new Vector2[3] { new Vector2(180, 50), new Vector2(150, 1), new Vector2(70, 180) };
-            Vector2[] v3 = new Vector2[3] { new Vector2(180, 150), new Vector2(120, 160), new Vector2(130, 180) };
-            Graphics.DrawTriangle(image, v1[0], v1[1], v1[2], Color.White);
-            Graphics.DrawTriangle(image, v2[0], v2[1], v2[2], Color.White);
-            Graphics.DrawTriangle(image, v3[0], v3[1], v3[2], Color.White);
-            string path = Environment.CurrentDirectory + "/Lesson2_Line_sweeping.png";
-            image.SaveAsPng(path);
-        }
-        static void Test3()
-        {
-            int width = 800;
-            int height = 800;
-            Image<Rgba32> image = new Image<Rgba32>(width, height, Color.Black);
-            Vector2[] v1 = new Vector2[3] { new Vector2(10, 70), new Vector2(50, 160), new Vector2(70, 80) };
-            Vector2[] v2 = new Vector2[3] { new Vector2(180, 50), new Vector2(150, 1), new Vector2(70, 180) };
-            Vector2[] v3 = new Vector2[3] { new Vector2(180, 150), new Vector2(120, 160), new Vector2(130, 180) };
-            Graphics.DrawTriangle2(image, v1[0], v1[1], v1[2], Color.White);
-            Graphics.DrawTriangle2(image, v2[0], v2[1], v2[2], Color.White);
-            Graphics.DrawTriangle2(image, v3[0], v3[1], v3[2], Color.White);
-            string path = Environment.CurrentDirectory + "/Lesson2_cross.png";
-            image.SaveAsPng(path);
-        }
+        //static void Test2()
+        //{
+        //    int width = 800;
+        //    int height = 800;
+        //    Image<Rgba32> image = new Image<Rgba32>(width, height, Color.Black);
+        //    Vector2[] v1 = new Vector2[3] { new Vector2(10, 70), new Vector2(50, 160), new Vector2(70, 80) };
+        //    Vector2[] v2 = new Vector2[3] { new Vector2(180, 50), new Vector2(150, 1), new Vector2(70, 180) };
+        //    Vector2[] v3 = new Vector2[3] { new Vector2(180, 150), new Vector2(120, 160), new Vector2(130, 180) };
+        //    Graphics.DrawTriangle(image, v1[0], v1[1], v1[2], Color.White);
+        //    Graphics.DrawTriangle(image, v2[0], v2[1], v2[2], Color.White);
+        //    Graphics.DrawTriangle(image, v3[0], v3[1], v3[2], Color.White);
+        //    string path = Environment.CurrentDirectory + "/Lesson2_Line_sweeping.png";
+        //    image.SaveAsPng(path);
+        //}
+        //static void Test3()
+        //{
+        //    int width = 800;
+        //    int height = 800;
+        //    Image<Rgba32> image = new Image<Rgba32>(width, height, Color.Black);
+        //    Vector2[] v1 = new Vector2[3] { new Vector2(10, 70), new Vector2(50, 160), new Vector2(70, 80) };
+        //    Vector2[] v2 = new Vector2[3] { new Vector2(180, 50), new Vector2(150, 1), new Vector2(70, 180) };
+        //    Vector2[] v3 = new Vector2[3] { new Vector2(180, 150), new Vector2(120, 160), new Vector2(130, 180) };
+        //    Graphics.DrawTriangle2(image, v1[0], v1[1], v1[2], Color.White);
+        //    Graphics.DrawTriangle2(image, v2[0], v2[1], v2[2], Color.White);
+        //    Graphics.DrawTriangle2(image, v3[0], v3[1], v3[2], Color.White);
+        //    string path = Environment.CurrentDirectory + "/Lesson2_cross.png";
+        //    image.SaveAsPng(path);
+        //}
         static void DrawModelByLineSweeping()
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
@@ -100,7 +103,7 @@ namespace tiny_renderer
                         byte b =(byte)Math.Ceiling(intensity * 255);
                         byte a = 255;
                         Color intensityColor = Color.FromRgba(r,g,b,a);
-                        Graphics.DrawTriangle(image, points[0], points[1], points[2], intensityColor);
+                        Graphics.DrawTriangle_LineSweeping(image, points[0], points[1], points[2], intensityColor);
                     }
                     //Graphics.DrawTriangle(image, points[0], points[1], points[2],color);
                 }
@@ -110,7 +113,7 @@ namespace tiny_renderer
             stopwatch.Stop();
             Console.WriteLine("DrawModelByLineSweeping:"+ stopwatch.ElapsedMilliseconds+"ms");
         }
-        static void DrawModelByCross()
+        static void DrawModelByZugammen()
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
             string modelPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "obj", "african_head.obj");
@@ -147,15 +150,15 @@ namespace tiny_renderer
                         byte b = (byte)Math.Ceiling(intensity * 255);
                         byte a = 255;
                         Color intensityColor = Color.FromRgba(r, g, b, a);
-                        Graphics.DrawTriangle2(image, points[0], points[1], points[2], intensityColor);
+                        Graphics.DrawTriangle_Zugammen(image, points[0], points[1], points[2], intensityColor);
                     }
                     //Graphics.DrawTriangle2(image, points[0], points[1], points[2], color);
                 }
             }
-            string path = Environment.CurrentDirectory + "/Lesson2_model_cross.png";
+            string path = Environment.CurrentDirectory + "/Lesson2_model_Zugammen.png";
             image.SaveAsPng(path);
             stopwatch.Stop();
-            Console.WriteLine("DrawModelByCross:" + stopwatch.ElapsedMilliseconds + "ms");
+            Console.WriteLine("DrawModelByZugammen:" + stopwatch.ElapsedMilliseconds + "ms");
         }
         static void DrawModelByBarycentric()
         {
@@ -195,7 +198,7 @@ namespace tiny_renderer
                         byte b = (byte)Math.Ceiling(intensity * 255);
                         byte a = 255;
                         Color intensityColor = Color.FromRgba(r, g, b, a);
-                        Graphics.DrawTriangleByBarycentric(image, points[0], points[1], points[2], intensityColor);
+                        Graphics.DrawTriangle_Barycentric(image, points[0], points[1], points[2], intensityColor);
                     }
                     //Graphics.DrawTriangleByBarycentric(image, points[0], points[1], points[2], color);
                 }
@@ -243,7 +246,7 @@ namespace tiny_renderer
                         byte b = (byte)Math.Ceiling(intensity * 255);
                         byte a = 255;
                         Color intensityColor = Color.FromRgba(r, g, b, a);
-                        Graphics.DrawTriangleByBarycentric_Cross(image, points[0], points[1], points[2], intensityColor);
+                        Graphics.DrawTriangle_Barycentric_Cross(image, points[0], points[1], points[2], intensityColor);
                     }
                     //Graphics.DrawTriangleByBarycentric(image, points[0], points[1], points[2], color);
                 }

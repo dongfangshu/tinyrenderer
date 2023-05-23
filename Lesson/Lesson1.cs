@@ -23,8 +23,8 @@ namespace tiny_renderer
             int centerX = width / 2;
             int centerY = height / 2;
             //左上角是原点
-            Graphics.DrawLine2(image, centerX, centerY, centerX + 100, centerY - 100, Color.Red);//中心右上角45度
-            Graphics.DrawLine2(image, centerX + 100, centerY, centerX + 100 + 100, centerY - 100, Color.Yellow);//中心右上角45度平行线
+            Graphics.DrawLine_GeneralEquation(image, centerX, centerY, centerX + 100, centerY - 100, Color.Red);//中心右上角45度
+            Graphics.DrawLine_GeneralEquation(image, centerX + 100, centerY, centerX + 100 + 100, centerY - 100, Color.Yellow);//中心右上角45度平行线
                                                                                                                 //DrawLine(image, centerX, centerY, centerX + 100, centerY, Color.Green);//水平直线
                                                                                                                 //DrawLine(image, centerX, centerY, centerX, centerY - 100, Color.Black);//垂直直线
 
@@ -59,10 +59,10 @@ namespace tiny_renderer
             {
                 int x = i;
                 int dy = (int)Math.Ceiling(Math.Sqrt(Math.Pow(r, 2) - Math.Pow(x, 2)));
-                Graphics.DrawLine(image, a + x, b + dy, a, b, Color.White);
-                Graphics.DrawLine(image, a + x, b - dy, a, b, Color.White);
-                Graphics.DrawLine(image, a - x, b + dy, a, b, Color.White);
-                Graphics.DrawLine(image, a - x, b - dy, a, b, Color.White);
+                Graphics.DrawLine_Delta(image, a + x, b + dy, a, b, Color.White);
+                Graphics.DrawLine_Delta(image, a + x, b - dy, a, b, Color.White);
+                Graphics.DrawLine_Delta(image, a - x, b + dy, a, b, Color.White);
+                Graphics.DrawLine_Delta(image, a - x, b - dy, a, b, Color.White);
             }
             string path = Environment.CurrentDirectory + "/framgent.png";
             image.SaveAsPng(path);
@@ -99,7 +99,7 @@ namespace tiny_renderer
                         int y0 = (int)Math.Ceiling((v0.y * height / 2) + height / 2);
                         int x1 = (int)Math.Ceiling((v1.x * width / 2) + width / 2);
                         int y1 = (int)Math.Ceiling(((v1.y * height / 2)) + height / 2);
-                        Graphics.DrawLine(image, x0, y0, x1, y1, color);
+                        Graphics.DrawLine_GeneralEquation(image, x0, y0, x1, y1, color);
                     }
 
                 }
