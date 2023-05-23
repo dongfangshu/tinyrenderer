@@ -146,7 +146,7 @@ namespace tiny_renderer
         /// <param name="v1"></param>
         /// <param name="v2"></param>
         /// <param name="v3"></param>
-        public static void DrawTriangle(Image<Rgba32> image, Vector2 v1, Vector2 v2, Vector2 v3,Color color)
+        public static void DrawTriangle(Image<Rgba32> image, Vector2 v1, Vector2 v2, Vector2 v3, Color color)
         {
             //  这里到原点在左上角，和教程不一样。y越大越往下。所以这里是上半部分，教程是下半部分
             if (v1.Y > v2.Y)
@@ -210,19 +210,71 @@ namespace tiny_renderer
         /// <param name="v1"></param>
         /// <param name="v2"></param>
         /// <param name="v3"></param>
-        public static void DrawTriangle2(Image<Rgba32> image, Vector2 v1, Vector2 v2, Vector2 v3,Color color)
+        public static void DrawTriangle2(Image<Rgba32> image, Vector2 v1, Vector2 v2, Vector2 v3, Color color)
         {
             //box
-            Box box = GetBox(new Vector2[3] {v1,v2,v3 });
-            for (float x = box.minX; x < box.maxX ; x++)
+            Box box = GetBox(new Vector2[3] { v1, v2, v3 });
+            for (float x = box.minX; x < box.maxX; x++)
             {
                 for (float y = box.minY; y < box.maxY; y++)
                 {
-                    Vector2 point = new Vector2(x,y);
-                    if (InTriangle(point,v1,v2,v3))
+                    Vector2 point = new Vector2(x, y);
+                    if (InTriangle(point, v1, v2, v3))
                     {
                         image[(int)x, (int)y] = color;
                     }
+                }
+            }
+        }
+        /// <summary>
+        /// 重心坐标法
+        /// </summary>
+        /// <param name="image"></param>
+        /// <param name="v1"></param>
+        /// <param name="v2"></param>
+        /// <param name="v3"></param>
+        public static void DrawTriangleByBarycentric(Image<Rgba32> image, Vector2 v1, Vector2 v2, Vector2 v3, Color color)
+        {
+            //box
+            Box box = GetBox(new Vector2[3] { v1, v2, v3 });
+            for (float x = box.minX; x < box.maxX; x++)
+            {
+                for (float y = box.minY; y < box.maxY; y++)
+                {
+                    Vector2 point = new Vector2(x, y);
+                    if (Barycentric(point, v1, v2, v3))
+                    {
+                        image[(int)x, (int)y] = color;
+                    }
+                }
+            }
+        }
+        /// <summary>
+        /// 重心坐标法 线性叉乘求解版
+        /// </summary>
+        /// <param name="image"></param>
+        /// <param name="v1"></param>
+        /// <param name="v2"></param>
+        /// <param name="v3"></param>
+        public static void DrawTriangleByBarycentric_Cross(Image<Rgba32> image, Vector2 v1, Vector2 v2, Vector2 v3, Color color)
+        {
+            //box
+            Box box = GetBox(new Vector2[3] { v1, v2, v3 });
+            for (float x = box.minX; x <= box.maxX; x++)
+            {
+                for (float y = box.minY; y <= box.maxY; y++)
+                {
+                    Vector2 point = new Vector2(x, y);
+                    Vector3 u = GetBarycentric(point, v1, v2, v3);
+                    if (u.X<0||u.Y<0||u.Z<0)
+                    {
+                        continue;
+                    }
+                    image[(int)x, (int)y] = color;
+                    //if (u.X>=0&&u.Y>=0&&u.X+u.Y<=1)
+                    //{
+                    //    image[(int)u.X, (int)u.Y] = color;
+                    //}
                 }
             }
         }
@@ -239,7 +291,7 @@ namespace tiny_renderer
                 minY = Math.Min(minY, points[i].Y);
                 maxY = Math.Max(maxY, points[i].Y);
             }
-            return new Box() { minX = minX,maxX=maxX,minY=minY,maxY=maxY};
+            return new Box() { minX = minX, maxX = maxX, minY = minY, maxY = maxY };
         }
         /// <summary>
         /// 判断点是否在三角形中
@@ -251,17 +303,17 @@ namespace tiny_renderer
         /// <returns></returns>
         public static bool InTriangle(Vector2 point, Vector2 a, Vector2 b, Vector2 c)
         {
-            bool azugament = PointInLineZugammen(a,point,b,c);
+            bool azugament = PointInLineZugammen(a, point, b, c);
             if (!azugament)
             {
                 return false;
             }
-            bool bzugament = PointInLineZugammen(b,point,a,c);
+            bool bzugament = PointInLineZugammen(b, point, a, c);
             if (!bzugament)
             {
                 return false;
             }
-            bool czugament = PointInLineZugammen(c,point,a,b);
+            bool czugament = PointInLineZugammen(c, point, a, b);
             if (!czugament)
             {
                 return false;
@@ -276,18 +328,58 @@ namespace tiny_renderer
         /// <param name="lineStart"></param>
         /// <param name="lineEnd"></param>
         /// <returns></returns>
-        public static bool PointInLineZugammen(Vector2 a,Vector2 b,Vector2 lineStart,Vector2 lineEnd)
+        public static bool PointInLineZugammen(Vector2 a, Vector2 b, Vector2 lineStart, Vector2 lineEnd)
         {
             Vector2 lineVector = lineEnd - lineStart;
             Vector2 av = a - lineStart;
             Vector2 bv = b - lineStart;
-            float across = Cross(av,lineVector);
-            float bcross = Cross(bv,lineVector);
+            float across = Cross(av, lineVector);
+            float bcross = Cross(bv, lineVector);
             return (across < 0 && bcross < 0) || (across > 0 && bcross > 0);
         }
         public static float Cross(Vector2 v1, Vector2 v2)
         {
             return v1.X * v2.Y - v1.Y * v2.X;
+        }
+        /// <summary>
+        /// 重心坐标法 判断点是否在三角形中
+        /// </summary>
+        /// <param name="point"></param>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <param name="c"></param>
+        /// <returns></returns>
+        public static bool Barycentric(Vector2 point, Vector2 a, Vector2 b, Vector2 c)
+        {
+            Vector2 pa = a - point;
+            Vector2 ab = b - a;
+            Vector2 ac = c - a;
+            float v = (pa.X * ab.Y / ab.X - pa.Y) / (ac.Y - ac.X * ab.Y / ab.X);
+            float u = -(pa.X + v * ac.X) / ab.X;
+            return u >= 0 && v >= 0 && u + v <= 1;
+        }
+        public static Vector3 GetBarycentric(Vector2 point, Vector2 a, Vector2 b, Vector2 c)
+        {
+            //ap=uab+vac
+            //uap+vac+pa=0;
+            //uab_x+vac_x+pa_x=0=>(u,v,1)[ab_x,ac_x,pa_x]=0
+            //uab_y+vac_y+pa_y=0=>(u,v,1)[ab_y,ac_y,pa_y]=0
+            //也就是说uv1垂直与[ab_x,ac_x,pa_x]和[ab_y,ac_y,pa_y]
+            //求出(ku,kv,k)
+            //所以u=u/k v=u/v
+            //因为ap=uab+vac可以表示为p=(1-u-v)a+ub+vc
+            //所以p点
+            //ab
+            //ac
+            //pa
+            Vector3 x = new Vector3(b.X-a.X,c.X-a.X,a.X-point.X);
+            Vector3 y = new Vector3(b.Y-a.Y,c.Y-a.Y,a.Y-point.Y);
+            Vector3 u = Vector3.Cross(y,x);//教程里原点是左下角，右手定则方向是向外。imageSharp原点在左上角，右手定则方向向里。这里应该反着乘
+            if (Vector3.Abs(u).Z<=0)
+            {
+                return new Vector3(-1, 1, 1);//三点共线
+            }
+            return new Vector3(1-u.X/u.Z-u.Y/u.Z,u.X/u.Z,u.Y/u.Z);
         }
     }
 }
