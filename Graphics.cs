@@ -276,10 +276,10 @@ namespace tiny_renderer
         }
         public static Box GetBox(Vector2[] points)
         {
-            int minX = 0;
-            int maxX = 0;
-            int minY = 0;
-            int maxY = 0;
+            int minX = int.MaxValue;
+            int maxX = int.MinValue;
+            int minY = int.MaxValue;
+            int maxY = int.MinValue;
             for (int i = 0; i < points.Length; i++)
             {
                 minX = Math.Min(minX, (int)points[i].X);
@@ -287,7 +287,7 @@ namespace tiny_renderer
                 minY = Math.Min(minY, (int)points[i].Y);
                 maxY = Math.Max(maxY, (int)points[i].Y);
             }
-            return new Box() { minX = minX, maxX = maxX, minY = minY, maxY = maxY };
+            return new Box() { minX = minX, maxX = maxX, minY = minY, maxY = maxY};
         }
         /// <summary>
         /// 判断点是否在三角形中
@@ -379,6 +379,8 @@ namespace tiny_renderer
             Vector3 x = new Vector3(b.X-a.X,c.X-a.X,a.X-point.X);
             Vector3 y = new Vector3(b.Y-a.Y,c.Y-a.Y,a.Y-point.Y);
             Vector3 u = Vector3.Cross(y,x);//教程里原点是左下角，右手定则方向是向外。imageSharp原点在左上角，右手定则方向向里。这里应该反着乘
+            //u=(u.x/u.z,u.y/u.z,1)
+            //u=>u.x/u.z   v=>u.y/u.z
             if (Vector3.Abs(u).Z<=0)
             {
                 return new Vector3(-1, 1, 1);//三点共线
