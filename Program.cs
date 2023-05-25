@@ -18,8 +18,11 @@ class Program
         //Lesson2 lesson2 = new Lesson2();
         //lesson2.Start();
 
-        Lesson3 lesson3 = new Lesson3();
-        lesson3.Start();
+        //Lesson3 lesson3 = new Lesson3();
+        //lesson3.Start();
+
+        Lesson4 lesson4 = new Lesson4();
+        lesson4.Start();
         //Test1();
         //Test2();
         //Test3();
