@@ -130,11 +130,11 @@ namespace tiny_renderer.Lesson
                                 int c_y = (int)MathF.Ceiling(uv_p_y);
                                 //左手右手需要倒一下y
                                 Rgba32 color = uvImage[c_x, uvImage.Height-c_y];
-                                //byte r = (byte)Math.Ceiling(intensity * color.R);
-                                //byte g = (byte)Math.Ceiling(intensity * color.G);
-                                //byte b = (byte)Math.Ceiling(intensity * color.B);
-                                //byte a = 255;
-                                image[x, y] = color;
+                                byte r = (byte)Math.Ceiling(intensity * color.R);
+                                byte g = (byte)Math.Ceiling(intensity * color.G);
+                                byte b = (byte)Math.Ceiling(intensity * color.B);
+                                byte a = 255;
+                                image[x, y] = new Rgba32(r,g,b,a);
 
                             }
                         }
